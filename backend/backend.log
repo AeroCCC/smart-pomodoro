@@ -1,0 +1,948 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.pomotodo:smart-pomotodo >---------------------
+[INFO] Building Smart PomoTodo 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.2.0:run (default-cli) > test-compile @ smart-pomotodo >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ smart-pomotodo ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ smart-pomotodo ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ smart-pomotodo ---
+[INFO] skip non existing resourceDirectory D:\用户目录\桌面\实验报告\毕设\smart-pomotodo\backend\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ smart-pomotodo ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot:3.2.0:run (default-cli) < test-compile @ smart-pomotodo <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.2.0:run (default-cli) @ smart-pomotodo ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.0)
+
+2026-02-09T18:44:26.345+08:00  INFO 22128 --- [           main] com.pomotodo.SmartPomoTodoApplication    : Starting SmartPomoTodoApplication using Java 17.0.10 with PID 22128 (D:\用户目录\桌面\实验报告\毕设\smart-pomotodo\backend\target\classes started by Zeppelin in D:\用户目录\桌面\实验报告\毕设\smart-pomotodo\backend)
+2026-02-09T18:44:26.347+08:00 DEBUG 22128 --- [           main] com.pomotodo.SmartPomoTodoApplication    : Running with Spring Boot v3.2.0, Spring v6.1.1
+2026-02-09T18:44:26.348+08:00  INFO 22128 --- [           main] com.pomotodo.SmartPomoTodoApplication    : The following 1 profile is active: "dev"
+2026-02-09T18:44:27.014+08:00  INFO 22128 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-09T18:44:27.015+08:00  INFO 22128 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-09T18:44:27.166+08:00  INFO 22128 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 144 ms. Found 6 JPA repository interfaces.
+2026-02-09T18:44:27.766+08:00  INFO 22128 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-02-09T18:44:27.775+08:00  INFO 22128 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-09T18:44:27.775+08:00  INFO 22128 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-02-09T18:44:27.865+08:00  INFO 22128 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-02-09T18:44:27.866+08:00  INFO 22128 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1473 ms
+2026-02-09T18:44:27.896+08:00  INFO 22128 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-09T18:44:28.060+08:00  INFO 22128 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:pomotodo user=SA
+2026-02-09T18:44:28.061+08:00  INFO 22128 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-09T18:44:28.070+08:00  INFO 22128 --- [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:pomotodo'
+2026-02-09T18:44:28.155+08:00  INFO 22128 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-09T18:44:28.218+08:00  INFO 22128 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.3.1.Final
+2026-02-09T18:44:28.248+08:00  INFO 22128 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-02-09T18:44:28.445+08:00  INFO 22128 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-09T18:44:28.481+08:00  WARN 22128 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-09T18:44:29.356+08:00  INFO 22128 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    drop table if exists focus_logs cascade 
+Hibernate: 
+    drop table if exists push_subscriptions cascade 
+Hibernate: 
+    drop table if exists tasks cascade 
+Hibernate: 
+    drop table if exists team_members cascade 
+Hibernate: 
+    drop table if exists teams cascade 
+Hibernate: 
+    drop table if exists users cascade 
+Hibernate: 
+    create table focus_logs (
+        date date,
+        duration integer not null,
+        end_time timestamp(6),
+        id bigint generated by default as identity,
+        start_time timestamp(6),
+        user_id bigint not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table push_subscriptions (
+        is_active boolean,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        last_used timestamp(6),
+        user_id bigint not null,
+        endpoint varchar(500) not null,
+        auth varchar(255) not null,
+        p256dh varchar(255) not null,
+        user_agent varchar(255),
+        primary key (id)
+    )
+Hibernate: 
+    create table tasks (
+        completed boolean not null,
+        assigned_to_id bigint,
+        completed_at timestamp(6),
+        created_at timestamp(6) not null,
+        deadline timestamp(6),
+        id bigint generated by default as identity,
+        team_id bigint,
+        user_id bigint not null,
+        status varchar(20),
+        priority varchar(255) not null,
+        text varchar(255) not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table team_members (
+        is_active boolean,
+        id bigint generated by default as identity,
+        joined_at timestamp(6),
+        team_id bigint not null,
+        user_id bigint not null,
+        role varchar(20) not null check (role in ('OWNER','ADMIN','MEMBER')),
+        primary key (id),
+        unique (team_id, user_id)
+    )
+Hibernate: 
+    create table teams (
+        is_active boolean,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        owner_id bigint not null,
+        updated_at timestamp(6),
+        invite_code varchar(20) unique,
+        name varchar(100) not null,
+        description varchar(500),
+        primary key (id)
+    )
+Hibernate: 
+    create table users (
+        enabled boolean not null,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        updated_at timestamp(6),
+        role varchar(20),
+        username varchar(50) not null unique,
+        email varchar(100) not null unique,
+        avatar varchar(255),
+        password varchar(255) not null,
+        primary key (id)
+    )
+Hibernate: 
+    alter table if exists focus_logs 
+       add constraint FK9cr7opk7auc5xd6oti9hx4f02 
+       foreign key (user_id) 
+       references users
+Hibernate: 
+    alter table if exists push_subscriptions 
+       add constraint FK1v577hpc7v9mdrm2uyk6kqgnl 
+       foreign key (user_id) 
+       references users
+Hibernate: 
+    alter table if exists tasks 
+       add constraint FK4516wfa828r15k9u3iw5er4vi 
+       foreign key (assigned_to_id) 
+       references users
+Hibernate: 
+    alter table if exists tasks 
+       add constraint FK7ohls81a92yq2hlgcml3h1atu 
+       foreign key (team_id) 
+       references teams
+Hibernate: 
+    alter table if exists tasks 
+       add constraint FK6s1ob9k4ihi75xbxe2w0ylsdh 
+       foreign key (user_id) 
+       references users
+Hibernate: 
+    alter table if exists team_members 
+       add constraint FKtgca08el3ofisywcf11f0f76t 
+       foreign key (team_id) 
+       references teams
+Hibernate: 
+    alter table if exists team_members 
+       add constraint FKee8x7x5026imwmma9kndkxs36 
+       foreign key (user_id) 
+       references users
+Hibernate: 
+    alter table if exists teams 
+       add constraint FKde03in0noals71lom04bmfgit 
+       foreign key (owner_id) 
+       references users
+2026-02-09T18:44:29.418+08:00  INFO 22128 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-09T18:44:29.724+08:00 DEBUG 22128 --- [           main] c.p.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-02-09T18:44:29.880+08:00  INFO 22128 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-09T18:44:30.568+08:00 ERROR 22128 --- [           main] c.p.service.PushNotificationService      : Failed to initialize push notification service
+
+java.lang.IllegalArgumentException: Incorrect length for uncompressed encoding
+	at org.bouncycastle.math.ec.ECCurve.decodePoint(ECCurve.java:414) ~[bcprov-jdk15on-1.70.jar:1.70.0]
+	at nl.martijndwars.webpush.Utils.loadPublicKey(Utils.java:61) ~[web-push-5.1.1.jar:na]
+	at nl.martijndwars.webpush.Utils.loadPublicKey(Utils.java:49) ~[web-push-5.1.1.jar:na]
+	at nl.martijndwars.webpush.AbstractPushService.<init>(AbstractPushService.java:69) ~[web-push-5.1.1.jar:na]
+	at nl.martijndwars.webpush.AbstractPushService.<init>(AbstractPushService.java:74) ~[web-push-5.1.1.jar:na]
+	at nl.martijndwars.webpush.PushService.<init>(PushService.java:48) ~[web-push-5.1.1.jar:na]
+	at com.pomotodo.service.PushNotificationService.init(PushNotificationService.java:50) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMethod.invoke(InitDestroyAnnotationBeanPostProcessor.java:457) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:401) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:219) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:421) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1767) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:601) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:323) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1441) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1348) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:911) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:789) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:241) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1356) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1193) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:323) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:973) ~[spring-beans-6.1.1.jar:6.1.1]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:946) ~[spring-context-6.1.1.jar:6.1.1]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:616) ~[spring-context-6.1.1.jar:6.1.1]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.2.0.jar:3.2.0]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753) ~[spring-boot-3.2.0.jar:3.2.0]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:455) ~[spring-boot-3.2.0.jar:3.2.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:323) ~[spring-boot-3.2.0.jar:3.2.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1342) ~[spring-boot-3.2.0.jar:3.2.0]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1331) ~[spring-boot-3.2.0.jar:3.2.0]
+	at com.pomotodo.SmartPomoTodoApplication.main(SmartPomoTodoApplication.java:11) ~[classes/:na]
+
+2026-02-09T18:44:30.707+08:00  WARN 22128 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-09T18:44:30.935+08:00  INFO 22128 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@58f6dab9, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@68d21554, org.springframework.security.web.context.SecurityContextHolderFilter@50f71f48, org.springframework.security.web.header.HeaderWriterFilter@5008c5a, org.springframework.web.filter.CorsFilter@23bc69a1, org.springframework.security.web.authentication.logout.LogoutFilter@16db679e, com.pomotodo.security.JwtAuthenticationFilter@7205a8b7, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3b829ef, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@38657ca8, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@463e413b, org.springframework.security.web.session.SessionManagementFilter@55623ed5, org.springframework.security.web.access.ExceptionTranslationFilter@6c53ce34, org.springframework.security.web.access.intercept.AuthorizationFilter@1ad55833]
+2026-02-09T18:44:31.162+08:00  INFO 22128 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+2026-02-09T18:44:31.173+08:00  INFO 22128 --- [           main] com.pomotodo.SmartPomoTodoApplication    : Started SmartPomoTodoApplication in 5.306 seconds (process running for 5.788)
+2026-02-09T18:44:31.177+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T18:44:35.739+08:00  INFO 22128 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-09T18:44:35.739+08:00  INFO 22128 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-09T18:44:35.740+08:00  INFO 22128 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-02-09T18:44:35.748+08:00 DEBUG 22128 --- [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /api/teams
+2026-02-09T18:44:35.758+08:00 DEBUG 22128 --- [nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T18:44:35.759+08:00  WARN 22128 --- [nio-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/teams' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-02-09T18:44:35.768+08:00 DEBUG 22128 --- [nio-8080-exec-1] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-09T18:44:35.771+08:00 DEBUG 22128 --- [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-02-09T18:44:35.775+08:00 DEBUG 22128 --- [nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T18:44:35.775+08:00 DEBUG 22128 --- [nio-8080-exec-1] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-09T18:45:04.187+08:00 DEBUG 22128 --- [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing POST /api/auth/register
+2026-02-09T18:45:04.188+08:00 DEBUG 22128 --- [nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T18:45:04.189+08:00 DEBUG 22128 --- [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured POST /api/auth/register
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.username=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id 
+    from
+        users u1_0 
+    where
+        u1_0.email=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    insert 
+    into
+        users
+        (avatar, created_at, email, enabled, password, role, updated_at, username, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-02-09T18:45:04.702+08:00 DEBUG 22128 --- [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /api/teams
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.avatar,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=? 
+        or u1_0.email=?
+2026-02-09T18:45:04.750+08:00 DEBUG 22128 --- [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /api/teams
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.avatar,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.created_at,
+        t1_0.description,
+        t1_0.invite_code,
+        t1_0.is_active,
+        t1_0.name,
+        t1_0.owner_id,
+        t1_0.updated_at 
+    from
+        teams t1_0 
+    where
+        t1_0.owner_id=? 
+        and t1_0.is_active 
+    order by
+        t1_0.created_at desc
+Hibernate: 
+    select
+        tm1_0.id,
+        tm1_0.is_active,
+        tm1_0.joined_at,
+        tm1_0.role,
+        tm1_0.team_id,
+        tm1_0.user_id 
+    from
+        team_members tm1_0 
+    where
+        tm1_0.user_id=? 
+        and tm1_0.is_active=true
+2026-02-09T18:45:23.649+08:00 DEBUG 22128 --- [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /api/teams
+2026-02-09T18:45:23.650+08:00 ERROR 22128 --- [nio-8080-exec-3] c.p.security.JwtAuthenticationFilter     : Could not set user authentication in security context
+
+io.jsonwebtoken.security.SignatureException: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+	at io.jsonwebtoken.impl.DefaultJwtParser.verifySignature(DefaultJwtParser.java:340) ~[jjwt-impl-0.12.3.jar:0.12.3]
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:577) ~[jjwt-impl-0.12.3.jar:0.12.3]
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:362) ~[jjwt-impl-0.12.3.jar:0.12.3]
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:94) ~[jjwt-impl-0.12.3.jar:0.12.3]
+	at io.jsonwebtoken.impl.io.AbstractParser.parse(AbstractParser.java:36) ~[jjwt-impl-0.12.3.jar:0.12.3]
+	at io.jsonwebtoken.impl.io.AbstractParser.parse(AbstractParser.java:29) ~[jjwt-impl-0.12.3.jar:0.12.3]
+	at io.jsonwebtoken.impl.DefaultJwtParser.parseSignedClaims(DefaultJwtParser.java:821) ~[jjwt-impl-0.12.3.jar:0.12.3]
+	at com.pomotodo.security.JwtTokenProvider.validateToken(JwtTokenProvider.java:67) ~[classes/:na]
+	at com.pomotodo.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:35) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
+2026-02-09T18:45:23.650+08:00 DEBUG 22128 --- [nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T18:45:23.651+08:00 DEBUG 22128 --- [nio-8080-exec-3] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-09T18:45:23.652+08:00 DEBUG 22128 --- [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /error
+2026-02-09T18:45:23.653+08:00 DEBUG 22128 --- [nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T18:45:23.653+08:00 DEBUG 22128 --- [nio-8080-exec-3] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-09T18:45:46.022+08:00 DEBUG 22128 --- [nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing POST /api/auth/login
+2026-02-09T18:45:46.022+08:00 DEBUG 22128 --- [nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T18:45:46.023+08:00 DEBUG 22128 --- [nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured POST /api/auth/login
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.avatar,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=? 
+        or u1_0.email=?
+2026-02-09T18:45:46.198+08:00 DEBUG 22128 --- [nio-8080-exec-9] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.avatar,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=? 
+        or u1_0.email=?
+2026-02-09T18:45:46.261+08:00 DEBUG 22128 --- [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /api/teams
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.avatar,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=? 
+        or u1_0.email=?
+2026-02-09T18:45:46.265+08:00 DEBUG 22128 --- [nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /api/teams
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.avatar,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        t1_0.id 
+    from
+        teams t1_0 
+    where
+        t1_0.invite_code=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    insert 
+    into
+        teams
+        (created_at, description, invite_code, is_active, name, owner_id, updated_at, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        team_members
+        (is_active, joined_at, role, team_id, user_id, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+Hibernate: 
+    select
+        count(tm1_0.id) 
+    from
+        team_members tm1_0 
+    where
+        tm1_0.team_id=? 
+        and tm1_0.is_active
+2026-02-09T18:59:31.173+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T19:07:02.743+08:00 DEBUG 22128 --- [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /api/auth/me
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.avatar,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=? 
+        or u1_0.email=?
+2026-02-09T19:07:02.751+08:00 ERROR 22128 --- [nio-8080-exec-5] c.p.security.JwtAuthenticationFilter     : Could not set user authentication in security context
+
+org.springframework.security.core.userdetails.UsernameNotFoundException: User not found with username or email: aaaaa
+	at com.pomotodo.security.CustomUserDetailsService.lambda$loadUserByUsername$0(CustomUserDetailsService.java:25) ~[classes/:na]
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403) ~[na:na]
+	at com.pomotodo.security.CustomUserDetailsService.loadUserByUsername(CustomUserDetailsService.java:25) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:352) ~[spring-aop-6.1.1.jar:6.1.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.1.jar:6.1.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.1.jar:6.1.1]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.1.jar:6.1.1]
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123) ~[spring-tx-6.1.1.jar:6.1.1]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:385) ~[spring-tx-6.1.1.jar:6.1.1]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.1.jar:6.1.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.1.jar:6.1.1]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.1.jar:6.1.1]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:717) ~[spring-aop-6.1.1.jar:6.1.1]
+	at com.pomotodo.security.CustomUserDetailsService$$SpringCGLIB$$0.loadUserByUsername(<generated>) ~[classes/:na]
+	at com.pomotodo.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:38) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.0.jar:6.2.0]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.1.jar:6.1.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
+2026-02-09T19:07:02.752+08:00 DEBUG 22128 --- [nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T19:07:02.753+08:00 DEBUG 22128 --- [nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /api/auth/me
+2026-02-09T19:07:02.894+08:00 DEBUG 22128 --- [io-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /api/teams
+2026-02-09T19:07:02.895+08:00 DEBUG 22128 --- [io-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T19:07:02.896+08:00 DEBUG 22128 --- [io-8080-exec-10] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-09T19:07:02.897+08:00 DEBUG 22128 --- [io-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-02-09T19:07:02.898+08:00 DEBUG 22128 --- [io-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T19:07:02.898+08:00 DEBUG 22128 --- [io-8080-exec-10] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-09T19:07:17.993+08:00 DEBUG 22128 --- [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /api/teams
+2026-02-09T19:07:18.000+08:00 DEBUG 22128 --- [nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T19:07:18.001+08:00 DEBUG 22128 --- [nio-8080-exec-2] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-09T19:07:18.001+08:00 DEBUG 22128 --- [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /error
+2026-02-09T19:07:18.002+08:00 DEBUG 22128 --- [nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T19:07:18.002+08:00 DEBUG 22128 --- [nio-8080-exec-2] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-09T19:07:39.323+08:00 DEBUG 22128 --- [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing POST /api/auth/login
+2026-02-09T19:07:39.324+08:00 DEBUG 22128 --- [nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-09T19:07:39.325+08:00 DEBUG 22128 --- [nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured POST /api/auth/login
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.avatar,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=? 
+        or u1_0.email=?
+2026-02-09T19:07:39.418+08:00 DEBUG 22128 --- [nio-8080-exec-6] o.s.s.a.dao.DaoAuthenticationProvider    : Failed to find user 'Hermes'
+2026-02-09T19:14:31.380+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T19:29:31.549+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T19:44:31.686+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T19:59:31.776+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T20:14:31.856+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T20:29:31.909+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T20:44:31.961+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T20:59:31.979+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T21:14:31.997+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T21:29:32.021+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T21:44:32.044+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T21:59:32.035+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T22:14:32.047+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)
+2026-02-09T22:29:32.056+08:00 DEBUG 22128 --- [   scheduling-1] c.p.service.NotificationScheduler        : Checking for task deadlines...
+Hibernate: 
+    select
+        t1_0.id,
+        t1_0.assigned_to_id,
+        t1_0.completed,
+        t1_0.completed_at,
+        t1_0.created_at,
+        t1_0.deadline,
+        t1_0.priority,
+        t1_0.status,
+        t1_0.team_id,
+        t1_0.text,
+        t1_0.user_id 
+    from
+        tasks t1_0 
+    where
+        t1_0.deadline between ? and ? 
+        and not(t1_0.completed)

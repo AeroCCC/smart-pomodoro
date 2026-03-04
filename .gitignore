@@ -1,0 +1,21 @@
+# IDE
+.idea/
+.vscode/
+.qoder/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Build
+target/
+dist/
+build/
+
+# Env
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
