@@ -128,9 +128,10 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
 
+const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 
@@ -173,7 +174,8 @@ const handleRegister = async () => {
     })
 
     if (result.success) {
-      router.push('/tasks')
+      const redirectTarget = typeof route.query.redirect === 'string' ? route.query.redirect : '/tasks'
+      router.push(redirectTarget)
     } else {
       error.value = result.message || 'Registration failed. Please try again.'
     }

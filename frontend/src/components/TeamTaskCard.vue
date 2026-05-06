@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <div
     class="kanban-card"
-    :class="{ 
-      'completed': task.status === 'DONE',
-      'dragging': isDragging 
+    :class="{
+      completed: task.status === 'DONE',
+      dragging: isDragging
     }"
     draggable="true"
     @dragstart="handleDragStart"
@@ -15,32 +15,23 @@
         {{ task.priority }}
       </span>
       <div class="card-actions" v-if="canEdit" @click.stop>
-        <button class="action-btn" @click="$emit('edit', task)" title="编辑">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-          </svg>
+        <button class="action-btn" @click="$emit('edit', task)" title="Edit">
+          <AppIcon name="Pencil" :size="14" />
         </button>
-        <button class="action-btn delete" @click="$emit('delete', task)" title="删除">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-          </svg>
+        <button class="action-btn delete" @click="$emit('delete', task)" title="Delete">
+          <AppIcon name="Trash2" :size="14" />
         </button>
       </div>
     </div>
-    
+
     <p class="card-title">{{ task.text }}</p>
-    
+
     <div class="card-footer">
-      <div v-if="task.deadline" class="deadline" :class="{ 'overdue': isOverdue }">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <polyline points="12 6 12 12 16 14"/>
-        </svg>
+      <div v-if="task.deadline" class="deadline" :class="{ overdue: isOverdue }">
+        <AppIcon name="Clock3" :size="12" />
         {{ formatDeadline(task.deadline) }}
       </div>
-      
+
       <div v-if="task.assignedToId" class="assignee" :title="task.assignedToName">
         <span class="avatar">{{ getInitials(task.assignedToName) }}</span>
       </div>
@@ -52,7 +43,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
+import AppIcon from './AppIcon.vue'
 
 const props = defineProps({
   task: {
@@ -94,11 +86,11 @@ function formatDeadline(deadline) {
   const now = new Date()
   const diff = date - now
   const days = Math.ceil(diff / (1000 * 60 * 60 * 24))
-  
-  if (days < 0) return '已逾期'
-  if (days === 0) return '今天'
-  if (days === 1) return '明天'
-  return `${days}天后`
+
+  if (days < 0) return 'Overdue'
+  if (days === 0) return 'Today'
+  if (days === 1) return 'Tomorrow'
+  return `${days} days`
 }
 
 function handleDragStart(e) {

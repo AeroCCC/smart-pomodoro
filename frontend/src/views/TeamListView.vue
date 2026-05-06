@@ -8,16 +8,11 @@
       </div>
       <div class="header-actions">
         <button class="btn btn-secondary" @click="showJoinDialog = true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/>
-          </svg>
+          <AppIcon name="LogIn" :size="16" />
           Join Team
         </button>
         <button class="btn btn-primary" @click="showCreateDialog = true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="12" y1="5" x2="12" y2="19"/>
-            <line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
+          <AppIcon name="UserPlus" :size="16" />
           Create Team
         </button>
       </div>
@@ -46,9 +41,7 @@
       <!-- Owned Teams -->
       <section v-if="teamStore.ownedTeams.length > 0" class="teams-section">
         <h2 class="section-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-          </svg>
+          <AppIcon name="Crown" :size="20" />
           My Teams (Owner)
         </h2>
         <div class="teams-grid">
@@ -65,12 +58,7 @@
       <!-- Joined Teams -->
       <section v-if="teamStore.joinedTeams.length > 0" class="teams-section">
         <h2 class="section-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
+          <AppIcon name="Users" :size="20" />
           Joined Teams
         </h2>
         <div class="teams-grid">
@@ -92,10 +80,7 @@
           <div class="modal-header">
             <h2>Create New Team</h2>
             <button class="close-btn" @click="showCreateDialog = false">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
+              <AppIcon name="X" :size="20" />
             </button>
           </div>
 
@@ -149,10 +134,7 @@
           <div class="modal-header">
             <h2>Join a Team</h2>
             <button class="close-btn" @click="showJoinDialog = false">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
+              <AppIcon name="X" :size="20" />
             </button>
           </div>
 
@@ -194,11 +176,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, ref, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useTeamStore } from '../stores/teamStore'
 import TeamCard from '../components/TeamCard.vue'
+import AppIcon from '../components/AppIcon.vue'
 
+const route = useRoute()
 const router = useRouter()
 const teamStore = useTeamStore()
 
@@ -214,6 +198,12 @@ const createForm = ref({
 
 const joinForm = ref({
   inviteCode: ''
+})
+const autoJoinAttemptedCode = ref('')
+
+const inviteCodeFromRoute = computed(() => {
+  const rawCode = route.query.code
+  return typeof rawCode === 'string' ? rawCode.trim().toUpperCase() : ''
 })
 
 async function createTeam() {
@@ -249,12 +239,33 @@ async function joinTeam() {
   }
 }
 
+async function handleInviteLink() {
+  const inviteCode = inviteCodeFromRoute.value
+  if (!inviteCode || autoJoinAttemptedCode.value === inviteCode) {
+    return
+  }
+
+  autoJoinAttemptedCode.value = inviteCode
+  showJoinDialog.value = true
+  joinForm.value.inviteCode = inviteCode
+  await joinTeam()
+}
+
 function goToTeam(teamId) {
   router.push(`/team/${teamId}`)
 }
 
-onMounted(() => {
-  teamStore.fetchTeams()
+onMounted(async () => {
+  await teamStore.fetchTeams()
+  await handleInviteLink()
+})
+
+watch(inviteCodeFromRoute, async (newCode) => {
+  if (!newCode) {
+    autoJoinAttemptedCode.value = ''
+    return
+  }
+  await handleInviteLink()
 })
 </script>
 

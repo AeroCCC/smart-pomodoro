@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
+import axios, { extractApiErrorMessage } from '../lib/api'
 
 const API_URL = '/api'
 
@@ -10,6 +10,8 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref(JSON.parse(localStorage.getItem('user') || 'null'))
   const isLoading = ref(false)
   const error = ref(null)
+  const isInitialized = ref(false)
+  let initPromise = null
 
   // Getters
   const isAuthenticated = computed(() => !!token.value)
@@ -31,6 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
     
     // Set axios default header
     axios.defaults.headers.common['Authorization'] = `Bearer ${authData.accessToken}`
+    isInitialized.value = true
   }
 
   const clearAuthData = () => {
@@ -39,6 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     delete axios.defaults.headers.common['Authorization']
+    isInitialized.value = true
   }
 
   const login = async (credentials) => {
@@ -53,10 +57,10 @@ export const useAuthStore = defineStore('auth', () => {
         return { success: true }
       }
     } catch (err) {
-      error.value = err.response?.data?.message || 'Login failed'
+      error.value = extractApiErrorMessage(err, 'Login failed')
       return { 
         success: false, 
-        message: err.response?.data?.message || 'Login failed. Please check your credentials.'
+        message: error.value
       }
     } finally {
       isLoading.value = false
@@ -75,10 +79,10 @@ export const useAuthStore = defineStore('auth', () => {
         return { success: true }
       }
     } catch (err) {
-      error.value = err.response?.data?.message || 'Registration failed'
+      error.value = extractApiErrorMessage(err, 'Registration failed')
       return { 
         success: false, 
-        message: err.response?.data?.message || 'Registration failed. Please try again.'
+        message: error.value
       }
     } finally {
       isLoading.value = false
@@ -90,27 +94,42 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const fetchCurrentUser = async () => {
-    if (!token.value) return
+    if (!token.value) return false
 
     try {
       const response = await axios.get(`${API_URL}/auth/me`)
       user.value = response.data
       localStorage.setItem('user', JSON.stringify(user.value))
+      return true
     } catch (err) {
       console.error('Failed to fetch user:', err)
       if (err.response?.status === 401) {
         clearAuthData()
       }
+      return false
     }
   }
 
-  const initAuth = () => {
-    const savedToken = localStorage.getItem('token')
-    if (savedToken) {
+  const initAuth = async () => {
+    if (isInitialized.value) return
+    if (initPromise) return initPromise
+
+    initPromise = (async () => {
+      const savedToken = localStorage.getItem('token')
+      if (!savedToken) {
+        clearAuthData()
+        return
+      }
+
       token.value = savedToken
       axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`
-      fetchCurrentUser()
-    }
+      await fetchCurrentUser()
+      isInitialized.value = true
+    })().finally(() => {
+      initPromise = null
+    })
+
+    return initPromise
   }
 
   return {
@@ -118,6 +137,7 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     isLoading,
     error,
+    isInitialized,
     isAuthenticated,
     currentUser,
     login,

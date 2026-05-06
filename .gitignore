@@ -7,6 +7,12 @@
 node_modules/
 npm-debug.log*
 
+# Logs and runtime output
+*.log
+*.err.log
+nohup.out
+process_test.txt
+
 # Build
 target/
 dist/

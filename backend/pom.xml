@@ -110,17 +110,6 @@
             <artifactId>async-http-client</artifactId>
             <version>2.12.3</version>
         </dependency>
-        <!-- Upgrading Logback to fix CVE-2023-6378 and other vulnerabilities -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.5.13</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>1.5.13</version>
-        </dependency>
         <!-- BouncyCastle for crypto operations -->
         <dependency>
             <groupId>org.bouncycastle</groupId>

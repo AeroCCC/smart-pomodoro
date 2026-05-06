@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import './lib/api'
 import router from './router'
 import App from './App.vue'
 import 'element-plus/theme-chalk/el-message.css'

@@ -1,392 +1,247 @@
 <template>
-  <div class="focus-page">
-    <div class="focus-container">
-      <!-- Header -->
-      <header class="focus-header">
-        <button class="btn btn-ghost" @click="$router.push('/tasks')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-          Back
+  <div class="focus-page" :class="`mode-${focusStore.mode}`">
+    <div class="focus-shell">
+      <header class="focus-topbar glass-panel">
+        <button class="topbar-back" type="button" @click="router.back()">
+          <AppIcon name="ArrowLeft" :size="18" />
+          <span>返回</span>
         </button>
+
+        <div class="mode-switcher" role="tablist" aria-label="专注模式">
+          <button
+            v-for="option in modeOptions"
+            :key="option.value"
+            type="button"
+            class="mode-btn"
+            :class="{ active: focusStore.mode === option.value }"
+            :aria-pressed="focusStore.mode === option.value"
+            @click="setMode(option.value)"
+          >
+            {{ option.label }}
+          </button>
+        </div>
       </header>
 
-      <!-- Mode Switcher -->
-      <div class="mode-switcher">
-        <button
-          v-for="mode in ['work', 'shortBreak', 'longBreak']"
-          :key="mode"
-          class="mode-btn"
-          :class="{ active: focusStore.mode === mode }"
-          @click="setMode(mode)"
-        >
-          {{ mode === 'work' ? 'Focus Session' : mode === 'shortBreak' ? 'Short Break' : 'Long Break' }}
-        </button>
-      </div>
+      <section class="focus-grid">
+        <section class="focus-stage glass-panel">
+          <div class="stage-header">
+            <div class="stage-heading">
+              <h1>{{ currentModeMeta.title }}</h1>
+            </div>
+          </div>
 
-      <!-- Duration Settings -->
-      <div class="settings-section">
-        <button class="settings-toggle" @click="showSettings = !showSettings">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-          </svg>
-          Settings
-        </button>
-        
-        <div v-if="showSettings" class="settings-panel">
-          <div class="setting-group">
-            <label>Focus Duration</label>
-            <div class="preset-buttons">
-              <button
-                v-for="preset in focusStore.durationPresets.work"
-                :key="preset"
-                class="preset-btn"
-                :class="{ active: focusStore.selectedDurations.work === preset }"
-                @click="focusStore.setDuration('work', preset)"
-              >
-                {{ preset }}m
-              </button>
+          <div class="task-line">
+            {{ currentTask?.text || currentModeMeta.emptyTask }}
+          </div>
+
+          <div class="timer-zone">
+            <div class="timer-aura"></div>
+
+            <div class="timer-shell">
+              <svg class="timer-ring" viewBox="0 0 220 220" aria-hidden="true">
+                <defs>
+                  <linearGradient id="focusRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" :stop-color="ringGradient.start" />
+                    <stop offset="100%" :stop-color="ringGradient.end" />
+                  </linearGradient>
+                </defs>
+                <circle class="timer-track outer" cx="110" cy="110" r="96" />
+                <circle class="timer-track inner" cx="110" cy="110" r="82" />
+                <circle
+                  class="timer-progress"
+                  cx="110"
+                  cy="110"
+                  r="96"
+                  :stroke-dasharray="603.19"
+                  :stroke-dashoffset="603.19 - (603.19 * focusStore.progress) / 100"
+                />
+              </svg>
+
+              <div class="timer-center">
+                <p class="timer-eyebrow">{{ currentModeMeta.next }}</p>
+                <p class="timer-display">{{ focusStore.formatTime }}</p>
+              </div>
             </div>
           </div>
-          
-          <div class="setting-group">
-            <label>Short Break</label>
-            <div class="preset-buttons">
-              <button
-                v-for="preset in focusStore.durationPresets.shortBreak"
-                :key="preset"
-                class="preset-btn"
-                :class="{ active: focusStore.selectedDurations.shortBreak === preset }"
-                @click="focusStore.setDuration('shortBreak', preset)"
-              >
-                {{ preset }}m
-              </button>
-            </div>
+
+          <div class="controls-row">
+            <button class="control-btn secondary" type="button" aria-label="重置计时器" @click="handleReset">
+              <AppIcon name="RotateCcw" :size="18" />
+            </button>
+            <button class="control-btn primary" type="button" @click="toggleTimer">
+              <AppIcon :name="focusStore.isRunning ? 'Pause' : 'Play'" :size="20" />
+              <span>{{ primaryActionText }}</span>
+            </button>
+            <button class="control-btn secondary" type="button" aria-label="跳过当前阶段" @click="handleSkip">
+              <AppIcon name="SkipForward" :size="18" />
+            </button>
+            <button class="control-btn secondary" type="button" aria-label="切换提示音" @click="toggleSound">
+              <AppIcon :name="focusStore.soundEnabled ? 'Volume2' : 'VolumeX'" :size="18" />
+            </button>
+            <button class="control-btn secondary" type="button" aria-label="切换全屏" @click="focusStore.toggleFullscreen()">
+              <AppIcon :name="focusStore.isFullscreen ? 'Shrink' : 'Expand'" :size="18" />
+            </button>
           </div>
-          
-          <div class="setting-group">
-            <label>Long Break</label>
-            <div class="preset-buttons">
-              <button
-                v-for="preset in focusStore.durationPresets.longBreak"
-                :key="preset"
-                class="preset-btn"
-                :class="{ active: focusStore.selectedDurations.longBreak === preset }"
-                @click="focusStore.setDuration('longBreak', preset)"
-              >
-                {{ preset }}m
-              </button>
-            </div>
+
+          <div class="summary-grid">
+            <article class="summary-card">
+              <span class="summary-label">今日场次</span>
+              <strong>{{ todaySessions }}</strong>
+            </article>
+            <article class="summary-card accent">
+              <span class="summary-label">专注分钟</span>
+              <strong>{{ totalFocusTime }}</strong>
+            </article>
+            <article class="summary-card">
+              <span class="summary-label">节奏目标</span>
+              <strong>{{ rhythmGoalText }}</strong>
+            </article>
           </div>
-          
-          <div class="setting-group ambient-section">
-            <label>Ambient Sounds</label>
-            <div class="ambient-grid">
-              <div
-                v-for="(label, key) in focusStore.soundLabels"
-                :key="key"
-                class="ambient-item"
-              >
+        </section>
+
+        <aside class="focus-sidebar">
+          <section class="side-card glass-panel">
+            <button class="panel-toggle" type="button" @click="showSettings = !showSettings">
+              <h3>会话设置</h3>
+              <AppIcon :name="showSettings ? 'ChevronLeft' : 'Settings'" :size="18" />
+            </button>
+
+            <div v-if="showSettings" class="settings-panel">
+              <div class="duration-grid">
+                <label v-for="option in modeOptions" :key="option.value" class="field-block">
+                  <span>{{ option.settingLabel }}</span>
+                  <select
+                    :value="focusStore.selectedDurations[option.value]"
+                    @change="focusStore.setDuration(option.value, Number($event.target.value))"
+                  >
+                    <option
+                      v-for="preset in focusStore.durationPresets[option.value]"
+                      :key="preset"
+                      :value="preset"
+                    >
+                      {{ preset }} 分钟
+                    </option>
+                  </select>
+                </label>
+              </div>
+
+              <label class="field-block range-block">
+                <span>提醒音量</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  :value="focusStore.volume"
+                  @input="focusStore.setVolume(Number($event.target.value))"
+                />
+              </label>
+
+              <label class="toggle-row">
+                <span>专注时自动播放白噪音</span>
+                <input v-model="focusStore.autoPlayAmbient" type="checkbox" />
+              </label>
+
+              <div class="ambient-grid">
                 <button
-                  class="ambient-toggle"
+                  v-for="(label, key) in focusStore.soundLabels"
+                  :key="key"
+                  type="button"
+                  class="ambient-pill"
                   :class="{ active: focusStore.ambientSounds[key]?.playing }"
                   @click="focusStore.toggleAmbientSound(key)"
                 >
-                  {{ label }}
+                  <span>{{ label }}</span>
                 </button>
-                <input
-                  v-if="focusStore.ambientSounds[key]?.playing"
-                  type="range"
-                  min="0"
-                  max="100"
-                  :value="(focusStore.ambientSounds[key]?.volume || 0) * 100"
-                  @input="focusStore.setAmbientVolume(key, $event.target.value / 100)"
-                  class="volume-slider"
-                />
               </div>
             </div>
-            
-            <label class="checkbox-label">
-              <input
-                type="checkbox"
-                v-model="focusStore.autoPlayAmbient"
-              />
-              Auto-play on focus start
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Timer Display -->
-      <div class="timer-section">
-        <div class="timer-ring">
-          <svg class="timer-svg" viewBox="0 0 200 200">
-            <!-- Background circle -->
-            <circle
-              class="timer-track"
-              cx="100"
-              cy="100"
-              r="90"
-            />
-            <!-- Progress circle -->
-            <circle
-              class="timer-progress"
-              cx="100"
-              cy="100"
-              r="90"
-              :stroke-dasharray="565.48"
-              :stroke-dashoffset="565.48 * (1 - focusStore.progress / 100)"
-              :class="focusStore.mode"
-            />
-          </svg>
-          <div class="timer-content">
-            <div class="timer-time">{{ focusStore.formatTime }}</div>
-            <div class="timer-label">
-              <template v-if="currentTask">
-                Focusing on: <span class="task-name">{{ currentTask.text }}</span>
-              </template>
-              <template v-else>
-                Ready to focus
-              </template>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Controls -->
-      <div class="timer-controls">
-        <button class="control-btn secondary" @click="handleReset">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="23 4 23 10 17 10"/>
-            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-          </svg>
-        </button>
-
-        <button
-          class="control-btn primary"
-          :class="{ running: focusStore.isRunning }"
-          @click="toggleTimer"
-        >
-          <svg v-if="focusStore.isRunning" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <rect x="6" y="4" width="4" height="16"/>
-            <rect x="14" y="4" width="4" height="16"/>
-          </svg>
-          <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="5 3 19 12 5 21 5 3"/>
-          </svg>
-        </button>
-
-        <button class="control-btn secondary" @click="handleSkip">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="5 4 15 12 5 20 5 4"/>
-            <line x1="19" y1="5" x2="19" y2="19"/>
-          </svg>
-        </button>
-
-        <!-- Sound Toggle -->
-        <button
-          class="control-btn secondary sound-btn"
-          :class="{ muted: !focusStore.soundEnabled }"
-          @click="toggleSound"
-          title="Toggle sound"
-        >
-          <svg v-if="focusStore.soundEnabled" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
-          </svg>
-          <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-            <line x1="23" y1="9" x2="17" y2="15"/>
-            <line x1="17" y1="9" x2="23" y2="15"/>
-          </svg>
-        </button>
-
-        <!-- Fullscreen Toggle -->
-        <button
-          class="control-btn secondary"
-          :class="{ active: focusStore.isFullscreen }"
-          @click="focusStore.toggleFullscreen"
-          title="Toggle fullscreen"
-        >
-          <svg v-if="!focusStore.isFullscreen" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-          </svg>
-          <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Stats -->
-      <div class="focus-stats">
-        <div class="stat-item">
-          <span class="stat-value">{{ todaySessions }}</span>
-          <span class="stat-label">Sessions Today</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-value">{{ Math.round(totalFocusTime) }}</span>
-          <span class="stat-label">Minutes Focused</span>
-        </div>
-      </div>
-
-      <!-- Statistics Panel -->
-      <div class="statistics-section">
-        <button class="stats-toggle" @click="toggleStatsPanel">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 20V10M12 20V4M6 20v-6"/>
-          </svg>
-          Statistics
-        </button>
-        
-        <div v-if="showStatsPanel" class="stats-panel">
-          <!-- Weekly/Monthly Summary -->
-          <div class="stats-summary">
-            <div class="summary-card">
-              <div class="summary-title">This Week</div>
-              <div class="summary-value">{{ formatDuration(focusStore.weeklyStats?.totalMinutes) }}</div>
-              <div class="summary-detail">{{ focusStore.weeklyStats?.sessions || 0 }} sessions</div>
-            </div>
-            <div class="summary-card">
-              <div class="summary-title">This Month</div>
-              <div class="summary-value">{{ formatDuration(focusStore.monthlyStats?.totalMinutes) }}</div>
-              <div class="summary-detail">{{ focusStore.monthlyStats?.activeDays || 0 }} active days</div>
-            </div>
-          </div>
-          
-          <!-- Habits -->
-          <div class="habits-section">
-            <div class="habits-title">Focus Habits</div>
-            <div class="habits-grid">
-              <div class="habit-item">
-                <span class="habit-label">Earliest</span>
-                <span class="habit-value">{{ focusStore.habits?.earliestTime || 'N/A' }}</span>
-              </div>
-              <div class="habit-item">
-                <span class="habit-label">Latest</span>
-                <span class="habit-value">{{ focusStore.habits?.latestTime || 'N/A' }}</span>
-              </div>
-              <div class="habit-item">
-                <span class="habit-label">Current Streak</span>
-                <span class="habit-value streak">{{ focusStore.habits?.currentStreak || 0 }} days</span>
-              </div>
-              <div class="habit-item">
-                <span class="habit-label">Longest Streak</span>
-                <span class="habit-value">{{ focusStore.habits?.longestStreak || 0 }} days</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Daily Trend Chart -->
-          <div class="chart-section">
-            <div class="chart-title">Last 7 Days</div>
-            <div class="chart-bars">
-              <div 
-                v-for="(day, index) in focusStore.dailyStats" 
-                :key="day.date"
-                class="chart-bar-container"
-              >
-                <div 
-                  class="chart-bar" 
-                  :style="{ height: getBarHeight(day.duration) + '%' }"
-                  :title="`${day.date}: ${Math.round(day.duration / 60)} min`"
-                ></div>
-                <div class="chart-label">{{ formatDayLabel(day.date) }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+          </section>
+        </aside>
+      </section>
     </div>
 
-    <!-- Completion Modal -->
-    <teleport to="body">
-      <div v-if="completeDialog" class="modal-overlay" @click.self="completeDialog = false">
-        <div class="modal-content completion-modal">
-          <div class="completion-icon">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
+    <Teleport to="body">
+      <div v-if="completeDialog" class="focus-modal-overlay" @click.self="completeDialog = false">
+        <div class="focus-modal glass-panel">
+          <div class="focus-modal-icon">
+            <AppIcon name="CircleCheck" :size="28" />
           </div>
-          <h2>Great Job!</h2>
-          <p>{{ completionMessage }}</p>
-          <div class="modal-actions">
-            <button class="btn btn-secondary" @click="completeDialog = false">
-              Continue
-            </button>
-            <button class="btn btn-primary" @click="$router.push('/tasks')">
-              Back to Tasks
-            </button>
-          </div>
+          <h3>{{ completionMessage }}</h3>
+          <button class="btn btn-primary modal-action" type="button" @click="completeDialog = false">
+            继续
+          </button>
         </div>
       </div>
-    </teleport>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import AppIcon from '../components/AppIcon.vue'
 import { useFocusStore } from '../stores/focusStore'
 import { useTaskStore } from '../stores/taskStore'
 
-const route = useRoute()
 const router = useRouter()
+const route = useRoute()
 const focusStore = useFocusStore()
 const taskStore = useTaskStore()
 
 const completeDialog = ref(false)
-const showSettings = ref(false)
-const showStatsPanel = ref(false)
+const showSettings = ref(true)
+
+const modeOptions = [
+  { value: 'work', label: '专注', settingLabel: '专注时长' },
+  { value: 'shortBreak', label: '短休息', settingLabel: '短休息时长' },
+  { value: 'longBreak', label: '长休息', settingLabel: '长休息时长' }
+]
+
+const modeMetaMap = {
+  work: {
+    title: '开始专注',
+    next: '接下来：短休息',
+    actionLabel: '开始专注',
+    emptyTask: '选择一个任务开始本轮专注',
+    ringStart: 'var(--focus-work)',
+    ringEnd: '#FFB84D'
+  },
+  shortBreak: {
+    title: '短休息',
+    next: '接下来：回到专注',
+    actionLabel: '开始休息',
+    emptyTask: '放松一下，准备下一轮',
+    ringStart: 'var(--focus-short-break)',
+    ringEnd: '#86B7FF'
+  },
+  longBreak: {
+    title: '长休息',
+    next: '接下来：重新进入专注',
+    actionLabel: '开始休息',
+    emptyTask: '好好休息，恢复状态',
+    ringStart: 'var(--focus-long-break)',
+    ringEnd: '#8DE2C8'
+  }
+}
+
+const currentModeMeta = computed(() => modeMetaMap[focusStore.mode] || modeMetaMap.work)
+const ringGradient = computed(() => ({
+  start: currentModeMeta.value.ringStart,
+  end: currentModeMeta.value.ringEnd
+}))
+const currentTask = computed(() => taskStore.tasks.find((task) => task.id === focusStore.currentTaskId) || taskStore.pendingTasks[0] || null)
 const todaySessions = computed(() => focusStore.todaySessions)
 const totalFocusTime = computed(() => focusStore.totalFocusTime)
-
-const toggleStatsPanel = async () => {
-  showStatsPanel.value = !showStatsPanel.value
-  if (showStatsPanel.value) {
-    await focusStore.fetchAllStats()
-  }
-}
-
-const formatDuration = (minutes) => {
-  if (!minutes) return '0m'
-  const hours = Math.floor(minutes / 60)
-  const mins = minutes % 60
-  if (hours > 0) {
-    return `${hours}h ${mins}m`
-  }
-  return `${mins}m`
-}
-
-const formatDayLabel = (dateStr) => {
-  const date = new Date(dateStr)
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-  return days[date.getDay()]
-}
-
-const getBarHeight = (duration) => {
-  const maxDuration = Math.max(...focusStore.dailyStats.map(d => d.duration || 0), 1)
-  return Math.max((duration / maxDuration) * 100, 5)
-}
-
-const currentTask = computed(() => {
-  if (!focusStore.currentTaskId) return null
-  return taskStore.tasks.find(t => t.id === focusStore.currentTaskId)
-})
-
+const rhythmGoalText = computed(() => `${Math.min(todaySessions.value, 4)}/4`)
+const primaryActionText = computed(() => (focusStore.isRunning ? '暂停' : currentModeMeta.value.actionLabel))
 const completionMessage = computed(() => {
-  return focusStore.mode === 'work'
-    ? 'Work session completed! Take a well-deserved break.'
-    : 'Break is over! Ready to focus again?'
+  if (focusStore.mode === 'shortBreak' || focusStore.mode === 'longBreak') {
+    return '休息完成，下一轮专注已就绪'
+  }
+  return '本轮专注完成'
 })
 
 const setMode = (mode) => {
-  if (focusStore.isRunning) {
-    if (!confirm('Timer is running. Switch mode?')) return
-    focusStore.pause()
-  }
   focusStore.setMode(mode)
 }
 
@@ -395,17 +250,10 @@ const toggleTimer = () => {
 }
 
 const handleReset = () => {
-  if (focusStore.isRunning) {
-    if (!confirm('Timer is running. Reset?')) return
-  }
   focusStore.reset()
 }
 
 const handleSkip = () => {
-  if (focusStore.isRunning) {
-    if (!confirm('Timer is running. Skip?')) return
-    focusStore.pause()
-  }
   focusStore.skip()
 }
 
@@ -413,30 +261,34 @@ const toggleSound = () => {
   focusStore.toggleSound()
 }
 
-// Watch for timer completion
-watch(() => focusStore.timeLeft, (newVal, oldVal) => {
-  if (oldVal === 1 && newVal === 0) {
-    completeDialog.value = true
-  }
-})
-
-onMounted(async () => {
-  await taskStore.fetchTasks()
-
-  const taskId = route.params.taskId
-  if (taskId) {
-    const task = taskStore.tasks.find(t => t.id === parseInt(taskId))
-    if (task) {
-      focusStore.setCurrentTask(task.id)
+watch(
+  () => focusStore.timeLeft,
+  (value, oldValue) => {
+    if (oldValue === 1 && value > oldValue) {
+      completeDialog.value = true
     }
   }
+)
 
-  if (!focusStore.currentTaskId && taskStore.pendingTasks.length > 0) {
+onMounted(async () => {
+  focusStore.bindFullscreenListener()
+  await taskStore.fetchTasks()
+
+  const routeTaskId = route.params.taskId
+    ? Number(route.params.taskId)
+    : route.query.taskId
+      ? Number(route.query.taskId)
+      : null
+
+  if (routeTaskId) {
+    focusStore.setCurrentTask(routeTaskId)
+  } else if (!focusStore.currentTaskId && taskStore.pendingTasks.length > 0) {
     focusStore.setCurrentTask(taskStore.pendingTasks[0].id)
   }
 })
 
 onUnmounted(() => {
+  focusStore.unbindFullscreenListener()
   if (focusStore.isRunning) {
     focusStore.pause()
   }
@@ -445,218 +297,195 @@ onUnmounted(() => {
 
 <style scoped>
 .focus-page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: var(--space-xl);
+  position: relative;
+  min-height: 100vh;
+  padding: clamp(20px, 3vw, 36px);
+  background: var(--bg-focus-shell);
+  overflow: hidden;
 }
 
-.focus-container {
+.focus-page::before,
+.focus-page::after {
+  content: '';
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(18px);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.focus-page::before {
+  top: 72px;
+  right: 8%;
+  width: 280px;
+  height: 280px;
+  background: rgba(255, 184, 77, 0.18);
+}
+
+.focus-page::after {
+  bottom: 64px;
+  left: 2%;
+  width: 240px;
+  height: 240px;
+  background: rgba(76, 141, 255, 0.16);
+}
+
+.focus-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1320px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+  gap: 24px;
+}
+
+.glass-panel {
+  background: var(--bg-focus-panel);
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: var(--panel-blur);
+}
+
+.focus-topbar {
+  display: flex;
   align-items: center;
-  gap: var(--space-xl);
+  gap: 18px;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-radius: var(--radius-xl);
 }
 
-/* Header */
-.focus-header {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
+.topbar-back,
+.mode-btn,
+.control-btn,
+.panel-toggle,
+.ambient-pill {
+  border: none;
+  cursor: pointer;
 }
 
-/* Mode Switcher */
+.topbar-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+}
+
 .mode-switcher {
-  display: flex;
-  gap: var(--space-sm);
-  background: var(--bg-tertiary);
-  padding: 4px;
-  border-radius: var(--radius-lg);
+  display: inline-grid;
+  grid-template-columns: repeat(3, minmax(88px, 1fr));
+  gap: 10px;
+  padding: 6px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.52);
 }
 
 .mode-btn {
-  padding: var(--space-sm) var(--space-md);
-  border: none;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--text-secondary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.mode-btn:hover {
-  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  transition: transform var(--transition-fast), background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .mode-btn.active {
-  background: var(--bg-secondary);
-  color: var(--color-primary);
-  box-shadow: var(--shadow-sm);
-}
-
-/* Settings Section */
-.settings-section {
-  width: 100%;
-  max-width: 400px;
-}
-
-.settings-toggle {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
-  background: transparent;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  margin: 0 auto;
-}
-
-.settings-toggle:hover {
-  background: var(--bg-tertiary);
+  background: rgba(255, 255, 255, 0.92);
   color: var(--text-primary);
+  box-shadow: var(--shadow-soft);
 }
 
-.settings-panel {
-  margin-top: var(--space-md);
-  padding: var(--space-lg);
-  background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-}
-
-.setting-group {
-  margin-bottom: var(--space-md);
-}
-
-.setting-group:last-child {
-  margin-bottom: 0;
-}
-
-.setting-group label {
-  display: block;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-secondary);
-  margin-bottom: var(--space-sm);
-}
-
-.preset-buttons {
-  display: flex;
-  gap: var(--space-xs);
-  flex-wrap: wrap;
-}
-
-.preset-btn {
-  padding: var(--space-xs) var(--space-md);
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.preset-btn:hover {
-  background: var(--border-light);
-  color: var(--text-primary);
-}
-
-.preset-btn.active {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: white;
-}
-
-.ambient-section {
-  border-top: 1px solid var(--border-light);
-  padding-top: var(--space-md);
-  margin-top: var(--space-md);
-}
-
-.ambient-grid {
+.focus-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: var(--space-sm);
-  margin-bottom: var(--space-md);
+  grid-template-columns: minmax(0, 1.36fr) minmax(300px, 0.74fr);
+  gap: 24px;
+  align-items: start;
 }
 
-.ambient-item {
+.focus-stage {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: 24px;
+  padding: clamp(24px, 3vw, 32px);
+  border-radius: 32px;
 }
 
-.ambient-toggle {
-  padding: var(--space-sm);
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-size: var(--font-size-xs);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  text-align: center;
-}
-
-.ambient-toggle:hover {
-  background: var(--border-light);
-}
-
-.ambient-toggle.active {
-  background: var(--color-info);
-  border-color: var(--color-info);
-  color: white;
-}
-
-.volume-slider {
-  width: 100%;
-  height: 4px;
-  -webkit-appearance: none;
-  background: var(--border-light);
-  border-radius: 2px;
-  outline: none;
-}
-
-.volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-  background: var(--color-primary);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.checkbox-label {
+.stage-header {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.stage-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stage-heading h1,
+.side-card h3,
+.focus-modal h3 {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.08;
+}
+
+.task-line {
+  margin: -6px 0 2px;
+  text-align: center;
+  font-size: 28px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.timer-eyebrow {
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-sm);
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  cursor: pointer;
+  justify-content: center;
+  width: fit-content;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--text-accent);
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
 }
 
-.checkbox-label input {
-  accent-color: var(--color-primary);
-}
-
-/* Timer Section */
-.timer-section {
+.timer-zone {
   position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 500px;
+}
+
+.timer-aura {
+  position: absolute;
+  width: min(440px, 76%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 107, 53, 0.16), rgba(255, 255, 255, 0));
+  filter: blur(14px);
+}
+
+.timer-shell {
+  position: relative;
+  width: min(100%, 540px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
 }
 
 .timer-ring {
-  position: relative;
-  width: 320px;
-  height: 320px;
-}
-
-.timer-svg {
   width: 100%;
   height: 100%;
   transform: rotate(-90deg);
@@ -664,377 +493,324 @@ onUnmounted(() => {
 
 .timer-track {
   fill: none;
-  stroke: var(--border-light);
-  stroke-width: 8;
+}
+
+.timer-track.outer {
+  stroke: var(--focus-ring-track);
+  stroke-width: 14;
+}
+
+.timer-track.inner {
+  stroke: var(--focus-ring-inner);
+  stroke-width: 22;
 }
 
 .timer-progress {
   fill: none;
-  stroke-width: 8;
+  stroke: url(#focusRingGradient);
+  stroke-width: 14;
   stroke-linecap: round;
-  transition: stroke-dashoffset 0.5s ease;
+  transition: stroke-dashoffset 300ms ease;
+  filter: drop-shadow(0 10px 18px rgba(255, 107, 53, 0.22));
 }
 
-.timer-progress.work {
-  stroke: var(--color-primary);
-}
-
-.timer-progress.shortBreak,
-.timer-progress.longBreak {
-  stroke: var(--color-info);
-}
-
-.timer-content {
+.timer-center {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  top: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 18px;
+  transform: translate(-50%, -50%);
   text-align: center;
 }
 
-.timer-time {
-  font-size: 64px;
-  font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
+.timer-display {
+  margin: 0;
+  font-size: clamp(72px, 12vw, 104px);
+  line-height: 0.92;
+  letter-spacing: -0.06em;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -2px;
+  color: var(--text-primary);
 }
 
-.timer-label {
-  margin-top: var(--space-sm);
-  font-size: var(--font-size-sm);
-  color: var(--text-tertiary);
-  max-width: 200px;
-}
-
-.task-name {
-  color: var(--color-primary);
-  font-weight: var(--font-weight-medium);
-}
-
-/* Controls */
-.timer-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--space-lg);
+.controls-row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) repeat(3, 56px);
+  gap: 12px;
 }
 
 .control-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  min-height: 56px;
+  border-radius: 22px;
+  background: none;
+  color: var(--text-primary);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
 }
 
-.control-btn.primary {
-  width: 72px;
-  height: 72px;
-  background: var(--color-primary);
-  color: white;
-  border-radius: 50%;
-  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
-}
-
-.control-btn.primary:hover {
-  transform: scale(1.05);
-  box-shadow: 0 12px 32px rgba(255, 107, 53, 0.4);
-}
-
-.control-btn.primary.running {
-  background: var(--color-secondary);
-  box-shadow: 0 8px 24px rgba(74, 85, 104, 0.3);
+.control-btn:hover,
+.topbar-back:hover,
+.panel-toggle:hover,
+.ambient-pill:hover,
+.mode-btn:hover {
+  transform: translateY(-1px);
 }
 
 .control-btn.secondary {
-  width: 48px;
-  height: 48px;
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
 }
 
-.control-btn.secondary:hover {
-  background: var(--border-light);
-  color: var(--text-primary);
+.control-btn.primary {
+  gap: 10px;
+  padding: 0 22px;
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-inverse);
+  background: linear-gradient(135deg, var(--focus-work), #FFB84D);
+  box-shadow: var(--shadow-primary-glow);
 }
 
-.control-btn.sound-btn {
-  position: relative;
-}
-
-.control-btn.sound-btn.muted {
-  color: var(--text-muted);
-}
-
-.control-btn.sound-btn.muted::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 2px;
-  height: 24px;
-  background: currentColor;
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-/* Stats */
-.focus-stats {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xl);
-  padding: var(--space-md) var(--space-xl);
-  background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.stat-value {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
-}
-
-.stat-label {
-  font-size: var(--font-size-xs);
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.stat-divider {
-  width: 1px;
-  height: 40px;
-  background: var(--border-light);
-}
-
-/* Completion Modal */
-.completion-modal {
-  text-align: center;
-  padding: var(--space-2xl);
-}
-
-.completion-icon {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto var(--space-lg);
-  background: var(--priority-low-bg);
-  color: var(--priority-low);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.completion-modal h2 {
-  font-size: var(--font-size-2xl);
-  margin-bottom: var(--space-sm);
-}
-
-.completion-modal p {
-  color: var(--text-secondary);
-  margin-bottom: var(--space-xl);
-}
-
-.modal-actions {
-  display: flex;
-  gap: var(--space-md);
-  justify-content: center;
-}
-
-.focus-page:fullscreen,
-.focus-page:-webkit-full-screen {
-  background: var(--bg-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.focus-page:fullscreen .focus-header,
-.focus-page:-webkit-full-screen .focus-header {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-}
-
-.focus-page:fullscreen .timer-ring,
-.focus-page:-webkit-full-screen .timer-ring {
-  width: 400px;
-  height: 400px;
-}
-
-.focus-page:fullscreen .timer-time,
-.focus-page:-webkit-full-screen .timer-time {
-  font-size: 80px;
-}
-
-.control-btn.active {
-  background: var(--color-primary);
-  color: white;
-}
-
-/* Statistics Section */
-.statistics-section {
-  width: 100%;
-  max-width: 500px;
-}
-
-.stats-toggle {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
-  background: transparent;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  margin: 0 auto;
-}
-
-.stats-toggle:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-}
-
-.stats-panel {
-  margin-top: var(--space-md);
-  padding: var(--space-lg);
-  background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-}
-
-.stats-summary {
+.summary-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-md);
-  margin-bottom: var(--space-lg);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .summary-card {
-  padding: var(--space-md);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.56);
+}
+
+.summary-card.accent {
+  background: var(--surface-accent);
+}
+
+.summary-label {
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+}
+
+.summary-card strong {
+  font-size: 38px;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.focus-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.side-card {
+  padding: 24px;
+  border-radius: 28px;
+}
+
+.panel-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0;
+  background: none;
+  color: var(--text-primary);
+}
+
+.settings-panel {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.duration-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.field-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.field-block span,
+.toggle-row span {
+  font-weight: var(--font-weight-semibold);
+}
+
+.field-block select,
+.field-block input[type="range"] {
+  width: 100%;
+}
+
+.field-block select {
+  min-height: 46px;
+  padding: 0 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--text-primary);
+}
+
+.range-block input[type="range"] {
+  accent-color: var(--focus-work);
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--text-secondary);
+}
+
+.ambient-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ambient-pill {
+  min-height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.ambient-pill.active {
+  background: rgba(255, 107, 53, 0.12);
+  border-color: rgba(255, 107, 53, 0.28);
+  box-shadow: var(--shadow-soft);
+}
+
+.focus-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(24, 33, 49, 0.36);
+  backdrop-filter: blur(10px);
+  z-index: 2000;
+}
+
+.focus-modal {
+  width: min(100%, 400px);
+  padding: 28px;
+  border-radius: 30px;
   text-align: center;
 }
 
-.summary-title {
-  font-size: var(--font-size-sm);
-  color: var(--text-muted);
-  margin-bottom: var(--space-xs);
-}
-
-.summary-value {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
-}
-
-.summary-detail {
-  font-size: var(--font-size-xs);
-  color: var(--text-secondary);
-  margin-top: var(--space-xs);
-}
-
-.habits-section {
-  margin-bottom: var(--space-lg);
-}
-
-.habits-title {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-secondary);
-  margin-bottom: var(--space-sm);
-}
-
-.habits-grid {
+.focus-modal-icon {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 16px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-sm);
+  place-items: center;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.18), rgba(255, 184, 77, 0.22));
+  color: var(--focus-work);
 }
 
-.habit-item {
-  display: flex;
-  justify-content: space-between;
-  padding: var(--space-sm);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-sm);
-}
-
-.habit-label {
-  font-size: var(--font-size-xs);
-  color: var(--text-muted);
-}
-
-.habit-value {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-primary);
-}
-
-.habit-value.streak {
-  color: var(--color-primary);
-}
-
-.chart-section {
-  margin-top: var(--space-md);
-}
-
-.chart-title {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-secondary);
-  margin-bottom: var(--space-sm);
-}
-
-.chart-bars {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--space-xs);
-  height: 80px;
-  padding: var(--space-sm);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-}
-
-.chart-bar-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-}
-
-.chart-bar {
+.modal-action {
   width: 100%;
-  max-width: 24px;
-  background: var(--color-primary);
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-  margin-top: auto;
-  transition: height 0.3s ease;
-  cursor: pointer;
+  margin-top: 20px;
 }
 
-.chart-bar:hover {
-  background: var(--color-secondary);
+.mode-shortBreak .control-btn.primary {
+  background: linear-gradient(135deg, var(--focus-short-break), #86B7FF);
 }
 
-.chart-label {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-top: 4px;
+.mode-longBreak .control-btn.primary {
+  background: linear-gradient(135deg, var(--focus-long-break), #8DE2C8);
+}
+
+.mode-shortBreak .timer-aura {
+  background: radial-gradient(circle, rgba(76, 141, 255, 0.16), rgba(255, 255, 255, 0));
+}
+
+.mode-longBreak .timer-aura {
+  background: radial-gradient(circle, rgba(78, 201, 165, 0.18), rgba(255, 255, 255, 0));
+}
+
+@media (max-width: 1120px) {
+  .focus-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .focus-topbar,
+  .stage-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mode-switcher,
+  .summary-grid,
+  .controls-row,
+  .ambient-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .controls-row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .control-btn.primary {
+    order: -1;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .focus-page {
+    padding: 16px;
+  }
+
+  .focus-topbar,
+  .focus-stage,
+  .side-card,
+  .focus-modal {
+    padding: 18px;
+  }
+
+  .timer-zone {
+    min-height: 400px;
+  }
+
+  .timer-shell {
+    width: min(100%, 420px);
+  }
+
+  .task-line {
+    font-size: 22px;
+  }
 }
 </style>

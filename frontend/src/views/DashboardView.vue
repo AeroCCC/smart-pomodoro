@@ -8,20 +8,11 @@
       </div>
       <div class="header-actions">
         <button class="btn btn-secondary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
+          <AppIcon name="CalendarRange" :size="16" />
           This Week
         </button>
         <button class="btn btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-            <polyline points="16 6 12 2 8 6"/>
-            <line x1="12" y1="2" x2="12" y2="15"/>
-          </svg>
+          <AppIcon name="Share2" :size="16" />
           Share
         </button>
       </div>
@@ -31,10 +22,7 @@
     <div class="stats-grid">
       <div class="stat-card completed">
         <div class="stat-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-            <polyline points="22 4 12 14.01 9 11.01"/>
-          </svg>
+          <AppIcon name="CircleCheck" :size="24" :stroke-width="2.1" />
         </div>
         <div class="stat-info">
           <span class="stat-value">{{ dashboardStats.completedTasks }}</span>
@@ -47,10 +35,7 @@
 
       <div class="stat-card hours">
         <div class="stat-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 6v6l4 2"/>
-          </svg>
+          <AppIcon name="Timer" :size="24" :stroke-width="2.1" />
         </div>
         <div class="stat-info">
           <span class="stat-value">{{ dashboardStats.focusHours.toFixed(1) }}h</span>
@@ -63,9 +48,7 @@
 
       <div class="stat-card streak">
         <div class="stat-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-          </svg>
+          <AppIcon name="Zap" :size="24" :stroke-width="2.1" />
         </div>
         <div class="stat-info">
           <span class="stat-value">{{ dashboardStats.bestStreak }} Days</span>
@@ -78,9 +61,7 @@
 
       <div class="stat-card score">
         <div class="stat-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-          </svg>
+          <AppIcon name="Trophy" :size="24" :stroke-width="2.1" />
         </div>
         <div class="stat-info">
           <span class="stat-value">{{ dashboardStats.score }}</span>
@@ -178,13 +159,26 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useTaskStore } from '../stores/taskStore'
 import axios from 'axios'
-import * as echarts from 'echarts'
+import { use, init } from 'echarts/core'
+import { BarChart } from 'echarts/charts'
+import { GridComponent, TooltipComponent } from 'echarts/components'
+import { CanvasRenderer } from 'echarts/renderers'
+import AppIcon from '../components/AppIcon.vue'
+
+use([BarChart, GridComponent, TooltipComponent, CanvasRenderer])
 
 const taskStore = useTaskStore()
 const activityChart = ref(null)
+let chartInstance = null
+
+const handleResize = () => {
+  if (chartInstance) {
+    chartInstance.resize()
+  }
+}
 
 // 真实数据状态
 const dashboardStats = ref({
@@ -248,7 +242,10 @@ const initChart = async () => {
   await nextTick()
 
   if (activityChart.value) {
-    const chart = echarts.init(activityChart.value)
+    if (chartInstance) {
+      chartInstance.dispose()
+    }
+    chartInstance = init(activityChart.value)
     
     // 使用API数据或默认数据
     const activityData = dashboardStats.value.focusActivity || []
@@ -259,7 +256,7 @@ const initChart = async () => {
       ? activityData.map(d => d.tasks)
       : [0, 0, 0, 0, 0, 0, 0]
     
-    chart.setOption({
+    chartInstance.setOption({
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'shadow' }
@@ -308,7 +305,7 @@ const initChart = async () => {
       ]
     })
 
-    window.addEventListener('resize', () => chart.resize())
+    window.addEventListener('resize', handleResize)
   }
 }
 
@@ -316,6 +313,14 @@ onMounted(async () => {
   await taskStore.fetchTasks()
   await loadDashboardStats()
   initChart()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+  if (chartInstance) {
+    chartInstance.dispose()
+    chartInstance = null
+  }
 })
 </script>
 

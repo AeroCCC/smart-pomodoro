@@ -10,9 +10,7 @@
       <header class="team-header">
         <div class="header-main">
           <button class="btn btn-ghost back-btn" @click="$router.push('/team')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
+            <AppIcon name="ArrowLeft" :size="20" />
             Back
           </button>
           
@@ -43,12 +41,7 @@
             class="btn btn-secondary"
             @click="openInviteDialog"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-              <circle cx="8.5" cy="7" r="4"/>
-              <line x1="20" y1="8" x2="20" y2="14"/>
-              <line x1="23" y1="11" x2="17" y2="11"/>
-            </svg>
+            <AppIcon name="UserPlus" :size="16" />
             Invite
           </button>
           <button 
@@ -56,10 +49,7 @@
             class="btn btn-danger"
             @click="showDissolveDialog = true"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6"/>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            </svg>
+            <AppIcon name="Trash2" :size="16" />
             Dissolve Team
           </button>
         </div>
@@ -72,12 +62,7 @@
           :class="{ active: activeTab === 'board' }"
           @click="activeTab = 'board'"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7"/>
-            <rect x="14" y="3" width="7" height="7"/>
-            <rect x="14" y="14" width="7" height="7"/>
-            <rect x="3" y="14" width="7" height="7"/>
-          </svg>
+          <AppIcon name="LayoutGrid" :size="18" />
           Kanban Board
         </button>
         <button 
@@ -85,12 +70,7 @@
           :class="{ active: activeTab === 'members' }"
           @click="activeTab = 'members'"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
+          <AppIcon name="Users" :size="18" />
           Members
         </button>
       </div>
@@ -127,10 +107,7 @@
             class="add-task-btn" 
             @click="openAddTask('TODO')"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
+            <AppIcon name="Plus" :size="16" />
             Add Task
           </button>
         </div>
@@ -165,10 +142,7 @@
             class="add-task-btn" 
             @click="openAddTask('IN_PROGRESS')"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
+            <AppIcon name="Plus" :size="16" />
             Add Task
           </button>
         </div>
@@ -203,10 +177,7 @@
             class="add-task-btn" 
             @click="openAddTask('DONE')"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
+            <AppIcon name="Plus" :size="16" />
             Add Task
           </button>
         </div>
@@ -246,10 +217,7 @@
               class="remove-btn"
               @click="removeMember(member)"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              </svg>
+              <AppIcon name="Trash2" :size="18" />
             </button>
           </div>
         </div>
@@ -262,10 +230,7 @@
             <div class="modal-header">
               <h2>Invite Members</h2>
               <button class="close-btn" @click="showInviteDialog = false">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"/>
-                  <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
+                <AppIcon name="X" :size="20" />
               </button>
             </div>
             <div class="modal-body">
@@ -275,10 +240,7 @@
               <div class="invite-link-display">
                 <span class="link-text">{{ inviteLink }}</span>
                 <button class="copy-btn" @click="copyInviteLink">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                  </svg>
+                  <AppIcon name="Copy" :size="18" />
                   {{ copiedLink ? 'Copied!' : 'Copy Link' }}
                 </button>
               </div>
@@ -292,10 +254,7 @@
               <div class="invite-code-display">
                 <span class="code">{{ teamStore.currentTeam.inviteCode }}</span>
                 <button class="copy-btn" @click="copyInviteCode">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                  </svg>
+                  <AppIcon name="Copy" :size="18" />
                   {{ copiedCode ? 'Copied!' : 'Copy Code' }}
                 </button>
               </div>
@@ -311,10 +270,7 @@
             <div class="modal-header">
               <h2>{{ editingTask ? 'Edit Task' : 'New Task' }}</h2>
               <button class="close-btn" @click="closeTaskDialog">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"/>
-                  <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
+                <AppIcon name="X" :size="20" />
               </button>
             </div>
             <div class="modal-body">
@@ -392,10 +348,7 @@
             <div class="modal-header">
               <h2>Task Details</h2>
               <button class="close-btn" @click="showTaskDetail = false">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"/>
-                  <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
+                <AppIcon name="X" :size="20" />
               </button>
             </div>
             <div class="modal-body" v-if="selectedTask">
@@ -443,19 +396,12 @@
             <div class="modal-header">
               <h2>Dissolve Team</h2>
               <button class="close-btn" @click="showDissolveDialog = false">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"/>
-                  <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
+                <AppIcon name="X" :size="20" />
               </button>
             </div>
             <div class="modal-body">
               <div class="warning-message">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="warning-icon">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                  <line x1="12" y1="9" x2="12" y2="13"/>
-                  <line x1="12" y1="17" x2="12.01" y2="17"/>
-                </svg>
+                <AppIcon name="TriangleAlert" :size="48" :stroke-width="2" custom-class="warning-icon" />
                 <h3>Warning: This action cannot be undone!</h3>
                 <p>Dissolving the team will:</p>
                 <ul>
@@ -486,6 +432,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTeamStore } from '../stores/teamStore'
 import TeamTaskCard from '../components/TeamTaskCard.vue'
+import AppIcon from '../components/AppIcon.vue'
 
 const route = useRoute()
 const router = useRouter()

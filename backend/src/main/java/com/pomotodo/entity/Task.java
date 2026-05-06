@@ -19,6 +19,12 @@ public class Task {
     
     @Column(nullable = false)
     private String priority = "medium"; // low, medium, high
+
+    @Column(name = "completion_definition", length = 500)
+    private String completionDefinition;
+
+    @Column(name = "estimated_pomodoros")
+    private Integer estimatedPomodoros;
     
     private boolean completed = false;
     

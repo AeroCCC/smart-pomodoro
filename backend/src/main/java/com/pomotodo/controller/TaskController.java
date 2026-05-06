@@ -25,12 +25,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
 public class TaskController {
+    private static final Set<String> ALLOWED_PRIORITIES = Set.of("low", "medium", "high");
+    private static final Set<String> ALLOWED_STATUSES = Set.of("TODO", "IN_PROGRESS", "DONE");
+    private static final int MAX_ESTIMATED_POMODOROS = 12;
+
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
@@ -41,6 +46,8 @@ public class TaskController {
         private String text;
         private String priority = "medium";
         private String deadline;
+        private String completionDefinition;
+        private Integer estimatedPomodoros;
     }
 
     private LocalDateTime parseDeadline(String deadline) {
@@ -67,11 +74,43 @@ public class TaskController {
         private String priority;
         private String deadline;
         private Boolean completed;
+        private String completionDefinition;
+        private Integer estimatedPomodoros;
     }
 
     private User getCurrentUser(UserDetails userDetails) {
         return userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> ApiException.notFound("USER_NOT_FOUND", "User not found"));
+    }
+
+    private Team getActiveTeamOrThrow(Long teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> ApiException.notFound("TEAM_NOT_FOUND", "Team not found"));
+        if (!Boolean.TRUE.equals(team.getIsActive())) {
+            throw ApiException.forbidden("TEAM_INACTIVE", "Team is inactive");
+        }
+        return team;
+    }
+
+    private String normalizeOptionalText(String value) {
+        if (value == null) {
+            return null;
+        }
+        String normalized = value.trim();
+        return normalized.isEmpty() ? null : normalized;
+    }
+
+    private Integer validateEstimatedPomodoros(Integer estimatedPomodoros) {
+        if (estimatedPomodoros == null) {
+            return null;
+        }
+        if (estimatedPomodoros < 0 || estimatedPomodoros > MAX_ESTIMATED_POMODOROS) {
+            throw ApiException.badRequest(
+                    "INVALID_ESTIMATED_POMODOROS",
+                    "Estimated pomodoros must be between 0 and " + MAX_ESTIMATED_POMODOROS
+            );
+        }
+        return estimatedPomodoros;
     }
 
     @GetMapping
@@ -111,6 +150,8 @@ public class TaskController {
             task.setText(request.getText().trim());
             task.setPriority(request.getPriority() != null ? request.getPriority() : "medium");
             task.setDeadline(parseDeadline(request.getDeadline()));
+            task.setCompletionDefinition(normalizeOptionalText(request.getCompletionDefinition()));
+            task.setEstimatedPomodoros(validateEstimatedPomodoros(request.getEstimatedPomodoros()));
             task.setUser(user);
             
             Task saved = taskRepository.save(task);
@@ -142,13 +183,23 @@ public class TaskController {
                     if (request.getDeadline() != null) {
                         task.setDeadline(parseDeadline(request.getDeadline()));
                     }
+
+                    if (request.getCompletionDefinition() != null) {
+                        task.setCompletionDefinition(normalizeOptionalText(request.getCompletionDefinition()));
+                    }
+
+                    if (request.getEstimatedPomodoros() != null) {
+                        task.setEstimatedPomodoros(validateEstimatedPomodoros(request.getEstimatedPomodoros()));
+                    }
                     
                     if (request.getCompleted() != null) {
                         task.setCompleted(request.getCompleted());
                         if (request.getCompleted() && task.getCompletedAt() == null) {
                             task.setCompletedAt(LocalDateTime.now());
+                            task.setStatus("DONE");
                         } else if (!request.getCompleted()) {
                             task.setCompletedAt(null);
+                            task.setStatus("TODO");
                         }
                     }
                     
@@ -183,7 +234,8 @@ public class TaskController {
                                           @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User user = getCurrentUser(userDetails);
-            if (!isTeamMember(teamId, user.getId())) {
+            Team team = getActiveTeamOrThrow(teamId);
+            if (!isTeamMember(team, user.getId())) {
                 throw ApiException.forbidden("NOT_TEAM_MEMBER", "Not a team member");
             }
             List<Task> tasks = taskRepository.findByTeamIdOrderByCreatedAtDesc(teamId);
@@ -202,24 +254,24 @@ public class TaskController {
     @PostMapping("/team/{teamId}")
     @Transactional
     public ResponseEntity<?> createTeamTask(@PathVariable Long teamId,
-                                           @RequestBody TeamTaskRequest request,
-                                           @AuthenticationPrincipal UserDetails userDetails) {
+                                            @RequestBody TeamTaskRequest request,
+                                            @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User user = getCurrentUser(userDetails);
-            if (!isTeamMember(teamId, user.getId())) {
+            Team team = getActiveTeamOrThrow(teamId);
+            if (!isTeamMember(team, user.getId())) {
                 throw ApiException.forbidden("NOT_TEAM_MEMBER", "Not a team member");
             }
-            Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> ApiException.notFound("TEAM_NOT_FOUND", "Team not found"));
+            validateCreateTeamTaskRequest(request);
             Task task = new Task();
-            task.setText(request.getText());
-            task.setPriority(request.getPriority() != null ? request.getPriority() : "medium");
-            task.setStatus(request.getStatus() != null ? request.getStatus() : "TODO");
+            task.setText(request.getText().trim());
+            task.setPriority(normalizePriority(request.getPriority()));
+            task.setStatus(normalizeStatus(request.getStatus()));
             task.setDeadline(parseDeadline(request.getDeadline()));
             task.setUser(user);
             task.setTeam(team);
             if (request.getAssignedToId() != null) {
-                if (!isTeamMember(teamId, request.getAssignedToId())) {
+                if (!isTeamMember(team, request.getAssignedToId())) {
                     throw ApiException.badRequest("INVALID_ASSIGNEE", "Assignee must be a team member");
                 }
                 User assignee = userRepository.findById(request.getAssignedToId())
@@ -244,19 +296,22 @@ public class TaskController {
                                            @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User user = getCurrentUser(userDetails);
-            if (!isTeamMember(teamId, user.getId())) {
+            Team team = getActiveTeamOrThrow(teamId);
+            if (!isTeamMember(team, user.getId())) {
                 throw ApiException.forbidden("NOT_TEAM_MEMBER", "Not a team member");
             }
             Task task = taskRepository.findByIdAndTeamId(taskId, teamId)
                 .orElseThrow(() -> ApiException.notFound("TASK_NOT_FOUND", "Task not found"));
-            if (!canEditTask(task, user.getId(), teamId)) {
+            if (!canEditTask(task, user.getId(), team)) {
                 throw ApiException.forbidden("NO_PERMISSION", "No permission to edit");
             }
-            if (request.getText() != null) task.setText(request.getText());
-            if (request.getPriority() != null) task.setPriority(request.getPriority());
+            validateUpdateTeamTaskRequest(request);
+            if (request.getText() != null) task.setText(request.getText().trim());
+            if (request.getPriority() != null) task.setPriority(normalizePriority(request.getPriority()));
             if (request.getStatus() != null) {
-                task.setStatus(request.getStatus());
-                if ("DONE".equals(request.getStatus())) {
+                String normalizedStatus = normalizeStatus(request.getStatus());
+                task.setStatus(normalizedStatus);
+                if ("DONE".equals(normalizedStatus)) {
                     task.setCompleted(true);
                     task.setCompletedAt(LocalDateTime.now());
                 } else {
@@ -266,7 +321,7 @@ public class TaskController {
             }
             if (request.getDeadline() != null) task.setDeadline(parseDeadline(request.getDeadline()));
             if (request.getAssignedToId() != null) {
-                if (!isTeamMember(teamId, request.getAssignedToId())) {
+                if (!isTeamMember(team, request.getAssignedToId())) {
                     throw ApiException.badRequest("INVALID_ASSIGNEE", "Assignee must be a team member");
                 }
                 User assignee = userRepository.findById(request.getAssignedToId())
@@ -290,9 +345,13 @@ public class TaskController {
                                            @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User user = getCurrentUser(userDetails);
+            Team team = getActiveTeamOrThrow(teamId);
+            if (!isTeamMember(team, user.getId())) {
+                throw ApiException.forbidden("NOT_TEAM_MEMBER", "Not a team member");
+            }
             Task task = taskRepository.findByIdAndTeamId(taskId, teamId)
                 .orElseThrow(() -> ApiException.notFound("TASK_NOT_FOUND", "Task not found"));
-            if (!canEditTask(task, user.getId(), teamId)) {
+            if (!canEditTask(task, user.getId(), team)) {
                 throw ApiException.forbidden("NO_PERMISSION", "No permission");
             }
             taskRepository.delete(task);
@@ -313,17 +372,22 @@ public class TaskController {
                                              @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User user = getCurrentUser(userDetails);
-            if (!isTeamMember(teamId, user.getId())) {
+            Team team = getActiveTeamOrThrow(teamId);
+            if (!isTeamMember(team, user.getId())) {
                 throw ApiException.forbidden("NOT_TEAM_MEMBER", "Not a team member");
             }
             String status = request.get("status");
-            if (status == null || !List.of("TODO", "IN_PROGRESS", "DONE").contains(status)) {
+            if (status == null || status.trim().isEmpty()) {
                 throw ApiException.badRequest("INVALID_STATUS", "Invalid status");
             }
             Task task = taskRepository.findByIdAndTeamId(taskId, teamId)
                 .orElseThrow(() -> ApiException.notFound("TASK_NOT_FOUND", "Task not found"));
-            task.setStatus(status);
-            if ("DONE".equals(status)) {
+            if (!canEditTask(task, user.getId(), team)) {
+                throw ApiException.forbidden("NO_PERMISSION", "No permission to edit");
+            }
+            String normalizedStatus = normalizeStatus(status);
+            task.setStatus(normalizedStatus);
+            if ("DONE".equals(normalizedStatus)) {
                 task.setCompleted(true);
                 task.setCompletedAt(LocalDateTime.now());
             } else {
@@ -348,14 +412,15 @@ public class TaskController {
                                        @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User user = getCurrentUser(userDetails);
-            if (!hasManagePermission(teamId, user.getId())) {
+            Team team = getActiveTeamOrThrow(teamId);
+            if (!hasManagePermission(team, user.getId())) {
                 throw ApiException.forbidden("NO_PERMISSION", "No permission");
             }
             Long assigneeId = request.get("assignedToId");
             if (assigneeId == null) {
                 throw ApiException.badRequest("ASSIGNEE_REQUIRED", "Assignee required");
             }
-            if (!isTeamMember(teamId, assigneeId)) {
+            if (!isTeamMember(team, assigneeId)) {
                 throw ApiException.badRequest("INVALID_ASSIGNEE", "Not a team member");
             }
             Task task = taskRepository.findByIdAndTeamId(taskId, teamId)
@@ -373,25 +438,59 @@ public class TaskController {
         }
     }
 
-    private boolean isTeamMember(Long teamId, Long userId) {
-        Team team = teamRepository.findById(teamId).orElse(null);
-        if (team == null) return false;
+    private boolean isTeamMember(Team team, Long userId) {
+        if (team == null || !Boolean.TRUE.equals(team.getIsActive())) return false;
         if (team.getOwner().getId().equals(userId)) return true;
-        return teamMemberRepository.existsByTeamIdAndUserIdAndIsActiveTrue(teamId, userId);
+        return teamMemberRepository.existsByTeamIdAndUserIdAndIsActiveTrue(team.getId(), userId);
     }
 
-    private boolean hasManagePermission(Long teamId, Long userId) {
-        Team team = teamRepository.findById(teamId).orElse(null);
-        if (team == null) return false;
+    private boolean hasManagePermission(Team team, Long userId) {
+        if (team == null || !Boolean.TRUE.equals(team.getIsActive())) return false;
         if (team.getOwner().getId().equals(userId)) return true;
-        Optional<TeamMember> member = teamMemberRepository.findByTeamIdAndUserId(teamId, userId);
+        Optional<TeamMember> member = teamMemberRepository.findByTeamIdAndUserId(team.getId(), userId);
         return member.isPresent() && 
                (member.get().getRole() == TeamMember.Role.ADMIN || member.get().getRole() == TeamMember.Role.OWNER);
     }
 
-    private boolean canEditTask(Task task, Long userId, Long teamId) {
+    private boolean canEditTask(Task task, Long userId, Team team) {
         if (task.getUser().getId().equals(userId)) return true;
-        return hasManagePermission(teamId, userId);
+        return hasManagePermission(team, userId);
+    }
+
+    private void validateCreateTeamTaskRequest(TeamTaskRequest request) {
+        if (request.getText() == null || request.getText().trim().isEmpty()) {
+            throw ApiException.badRequest("TASK_TEXT_REQUIRED", "Task text is required");
+        }
+        normalizePriority(request.getPriority());
+        normalizeStatus(request.getStatus());
+    }
+
+    private void validateUpdateTeamTaskRequest(TeamTaskRequest request) {
+        if (request.getText() != null && request.getText().trim().isEmpty()) {
+            throw ApiException.badRequest("TASK_TEXT_REQUIRED", "Task text is required");
+        }
+        if (request.getPriority() != null) {
+            normalizePriority(request.getPriority());
+        }
+        if (request.getStatus() != null) {
+            normalizeStatus(request.getStatus());
+        }
+    }
+
+    private String normalizePriority(String priority) {
+        String normalized = priority == null ? "medium" : priority.trim().toLowerCase();
+        if (!ALLOWED_PRIORITIES.contains(normalized)) {
+            throw ApiException.badRequest("INVALID_PRIORITY", "Invalid priority");
+        }
+        return normalized;
+    }
+
+    private String normalizeStatus(String status) {
+        String normalized = status == null ? "TODO" : status.trim().toUpperCase();
+        if (!ALLOWED_STATUSES.contains(normalized)) {
+            throw ApiException.badRequest("INVALID_STATUS", "Invalid status");
+        }
+        return normalized;
     }
 
     private TeamTaskResponse convertToTeamTaskResponse(Task task) {
@@ -424,6 +523,8 @@ public class TaskController {
         dto.setId(task.getId());
         dto.setText(task.getText());
         dto.setPriority(task.getPriority());
+        dto.setCompletionDefinition(task.getCompletionDefinition());
+        dto.setEstimatedPomodoros(task.getEstimatedPomodoros());
         dto.setStatus(task.getStatus());
         dto.setCompleted(task.isCompleted());
         dto.setCreatedAt(task.getCreatedAt());

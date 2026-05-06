@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
+import axios from '../lib/api'
 
 export const useTaskStore = defineStore('task', () => {
   const tasks = ref([])
@@ -23,9 +23,17 @@ export const useTaskStore = defineStore('task', () => {
     }
   }
 
-  async function addTask(text, priority = 'medium', deadline = null) {
-    const { data } = await axios.post('/api/tasks', { text, priority, deadline })
+  async function addTask(text, priority = 'medium', deadline = null, options = {}) {
+    const { completionDefinition = null, estimatedPomodoros = null } = options
+    const { data } = await axios.post('/api/tasks', {
+      text,
+      priority,
+      deadline,
+      completionDefinition,
+      estimatedPomodoros
+    })
     tasks.value.unshift(data)
+    return data
   }
 
   async function updateTask(id, updates) {

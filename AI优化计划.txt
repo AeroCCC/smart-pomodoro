@@ -1,0 +1,155 @@
+AI 规划能力升级方案（兼容现有功能版）
+
+一、Summary
+
+在不影响现有个人任务、团队任务、专注计时、看板统计和通知功能的前提下，分三层做增量升级：
+
+- 保留现有任务 CRUD、团队任务接口、Focus 流程和旧版 /api/ai/decompose 行为不变。
+- 新增一套独立的 AI 规划草稿能力，承载“里程碑 + 任务”两层结构，避免直接改坏现有任务主链路。
+- 个人任务首版接入 AI 增强字段与“下一步推荐”，团队任务暂不接入。
+- “下一步推荐”首版只基于真实任务状态生成，不接入 FocusLog 推理。
+
+二、Key Changes
+
+1. 后端与数据模型：采用“草稿隔离 + 任务追加字段”策略
+
+- 新增 AI 规划草稿模型，不直接复用 tasks 表承载里程碑结构。
+- 新增表：
+  - ai_plan_drafts：保存用户目标、标准化目标、规划状态、创建时间。
+  - ai_plan_milestones：保存草稿下的里程碑标题、排序、摘要。
+  - ai_plan_tasks：保存里程碑下的 AI 子任务、优先级、完成标准、预计番茄数、建议截止时间、排序、是否选中。
+- 现有 tasks 表仅追加可空字段：
+  - completion_definition
+  - estimated_pomodoros
+- 现有 tasks.deadline 继续复用，不新增正式任务的 suggested_deadline 字段；AI 草稿中的建议截止时间在应用时映射到 deadline。
+- 不修改 TeamTaskRequest、TeamTaskResponse、团队任务实体和团队权限逻辑。
+
+2. API 设计：新增接口，不破坏旧接口
+
+- 保留现有：
+  - POST /api/ai/decompose
+  - POST /api/tasks
+  - PUT /api/tasks/{id}
+  - /api/tasks/team/**
+  - /api/focus/**
+- 新增 AI 规划接口：
+  - POST /api/ai/plans
+    - 请求：{ "goal": string }
+    - 返回：{ planId, normalizedGoal, milestones: [{ id, title, summary, tasks: [...] }], resultType, message }
+  - GET /api/ai/plans/{planId}
+    - 返回指定草稿，支持刷新页面后重新进入规划结果。
+  - POST /api/ai/plans/{planId}/apply
+    - 请求：{ tasks: [{ draftTaskId, text, priority, completionDefinition, estimatedPomodoros, suggestedDeadline, selected }] }
+    - 行为：只创建 selected=true 的个人任务，事务内批量落库，失败则整体回滚。
+    - 返回：TaskResponse[]
+  - GET /api/ai/next-step
+    - 可选查询参数：planId
+    - 返回：{ source, taskId?, draftTaskId?, text, reason, priority, suggestedFocusMinutes, action }
+- 兼容扩展现有个人任务接口：
+  - POST /api/tasks 和 PUT /api/tasks/{id} 新增可选入参：
+    - completionDefinition?: string
+    - estimatedPomodoros?: number
+  - TaskResponse 新增可选出参：
+    - completionDefinition?: string
+    - estimatedPomodoros?: number
+- 旧客户端即使不传新字段，也必须保持原行为不变。
+
+3. AI 规划流程：从单轮拆解改成分阶段生成
+
+- 保留当前 AiGoalValidator 作为第一层本地校验。
+- 新增 AiPlannerService，分阶段执行：
+  - 第一步：目标标准化与可规划性判断
+  - 第二步：生成 2-4 个里程碑
+  - 第三步：按里程碑生成任务，每个里程碑 2-3 个任务，总任务数控制在 4-8 个
+- 每个 AI 任务输出固定字段：
+  - text
+  - priority
+  - completionDefinition
+  - estimatedPomodoros
+  - suggestedDeadline
+- 所有 AI 输出继续走后端 normalize：
+  - 去重
+  - 空值过滤
+  - 优先级合法化
+  - 番茄数范围校验
+  - 截止时间格式校验
+- 新增 AiNextStepService：
+  - 输入为当前用户未完成的个人任务，附带 priority、deadline、completionDefinition、estimatedPomodoros
+  - 若传入 planId，可把尚未应用的草稿任务一并提供给模型参考，但真实任务优先
+  - AI 失败时走确定性兜底：
+    - 先按 priority
+    - 再按最近 deadline
+    - 再按最早 createdAt
+    - 返回一个可立即执行的任务
+- 旧 AiTaskPlanningService 保留，作为兼容路径和回退方案，不直接删除。
+
+4. 前端交互：只改任务页 AI 面板，不改主任务流
+
+- 保持 TaskListView 主任务列表、勾选完成、删除、跳转 Focus 的逻辑不变。
+- AiSidebar 升级为三段式状态：
+  - Goal Intake：输入目标
+  - Plan Review：按里程碑分组展示任务，可编辑字段
+  - Next Step：展示当前最推荐的一步
+- 新增独立 aiPlannerStore，不把草稿状态塞进 taskStore，避免污染现有任务状态管理。
+- Plan Review 页面允许编辑：
+  - 任务文本
+  - 优先级
+  - 完成标准
+  - 预计番茄数
+  - 建议截止时间
+  - 是否选中
+- 点击“应用规划”时只调用 POST /api/ai/plans/{planId}/apply，不再前端逐条循环 addTask。
+- 主任务卡片 UI 保持现状，只显示：
+  - text
+  - priority
+  - deadline
+- 新增字段首版仅在：
+  - AI 规划面板
+  - “下一步推荐”卡片
+  - Focus 页任务摘要区域
+  中展示，不改 Dashboard、团队看板和通知页布局。
+
+5. 数据库与兼容策略
+
+- 开发环境继续走 H2 create-drop，新表和新字段由 JPA 自动建。
+- 生产环境因 ddl-auto: validate，必须补充手动 SQL：
+  - 为 tasks 表追加两个可空字段
+  - 新建三张 AI 草稿表及索引
+- 更新现有 db-update.sql，保持“追加字段/新表”风格，不做破坏性变更。
+- 所有统计逻辑保持原状：
+  - completionRate
+  - Dashboard 任务统计
+  - Focus 选中任务
+  - deadline 通知
+  均不依赖新字段，不应受影响。
+
+三、Test Plan
+
+- 后端单元测试：
+  - AiPlannerService 正常生成里程碑和任务
+  - 非法 AI 输出会重试并标准化
+  - AiNextStepService 在 AI 失败时能走兜底推荐
+  - 旧 AiTaskPlanningServiceTest 继续通过
+- 后端控制器测试：
+  - POST /api/tasks 旧请求体仍可创建任务
+  - POST /api/tasks 传新字段时可正常保存
+  - POST /api/ai/plans/{id}/apply 批量创建成功
+  - apply 中任一任务非法时整体回滚
+  - 团队任务接口与权限测试结果不变
+- 前端联调/手测场景：
+  - 原有手动新增个人任务仍正常
+  - 原有 AI 侧边栏入口仍正常显示
+  - 生成里程碑计划后可编辑并批量落库
+  - 新建的 AI 任务能正常出现在任务列表
+  - 从“下一步推荐”跳转 Focus 正常
+  - 团队任务看板、拖拽、分配、状态流转不受影响
+  - Dashboard、通知、deadline 展示不回归
+
+四、Assumptions
+
+- 本次只覆盖个人任务，团队任务不接 AI 增强字段和 AI 推荐。
+- “下一步推荐”首版只依据任务状态和任务字段，不接入 FocusLog。
+- 里程碑是 AI 草稿层概念，首版不在普通任务列表中做分组展示。
+- suggestedDeadline 只存在于 AI 草稿中；真正落库时映射到现有 deadline。
+- 旧 /api/ai/decompose 暂时保留，不做强制迁移或删除。
+- 首版不新增个人任务的独立编辑弹窗来修改 completionDefinition / estimatedPomodoros；这些字段主要在 AI 规划阶段编辑。

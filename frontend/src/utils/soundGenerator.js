@@ -109,13 +109,13 @@ export const soundTypes = {
 }
 
 export const soundLabels = {
-  rain: 'Rain',
-  forest: 'Forest',
-  ocean: 'Ocean',
-  fire: 'Fire',
-  cafe: 'Cafe',
-  library: 'Library',
-  fan: 'Fan'
+  rain: '雨声',
+  forest: '森林',
+  ocean: '海浪',
+  fire: '篝火',
+  cafe: '咖啡馆',
+  library: '图书馆',
+  fan: '风扇'
 }
 
 export default new SoundGenerator()
