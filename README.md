@@ -140,6 +140,22 @@
 
 ## 🚀 快速开始
 
+### 版本状态检查
+
+本项目以 GitHub `origin/main` 作为唯一的最新版本权威源。生产模式运行、交付或重装系统后恢复项目之前，先执行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\check-version-state.ps1
+```
+
+这个检查会确认：
+- 当前分支是 `main`，且跟踪 `origin/main`
+- 工作区没有未提交、暂存或未跟踪文件
+- 本地 `main` 没有领先或落后 `origin/main`
+- `backend/.env` 没有被 Git 跟踪，避免密钥被推送
+
+只有检查通过，才认为“最新版本已经保存到 GitHub”。如果脚本提示本地 ahead，先提交并 `git push origin main`；如果提示 dirty worktree，先确认这些改动是否应该提交。
+
 ### 前置要求
 - **Java**: JDK 17+
 - **Node.js**: 16+
@@ -194,6 +210,8 @@ export DASHSCOPE_API_KEY=your-dashscope-api-key
 ```
 
 获取 API Key: https://dashscope.aliyun.com/
+
+不要把真实 API Key、JWT Secret、VAPID 私钥或数据库密码写入仓库。已经出现在聊天、日志或 `.env` 文件里的密钥，应到对应控制台轮换后再继续使用。
 
 ### 2. JWT Secret 配置
 
