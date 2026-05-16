@@ -3,6 +3,11 @@
 .vscode/
 .qoder/
 
+# Local agent/tooling state
+.codex-logs/
+.github/java-upgrade/
+backend/.github/java-upgrade/
+
 # Node
 node_modules/
 npm-debug.log*
